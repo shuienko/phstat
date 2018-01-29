@@ -41,15 +41,6 @@ type PiResponseTopClients struct {
 	Clients map[string]int `json:"top_sources"`
 }
 
-// ParseJSON conterts raw binary output into object
-func ParseJSON(r interface{}, body []byte) error {
-	err := json.Unmarshal(body, r)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return err
-}
-
 // Get request to API
 func (r *PiConnector) Get(endpoint string) []byte {
 	var requestString = "http://" + r.Host + "/admin/api.php?" + endpoint
