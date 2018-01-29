@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/shuienko/phstat/gohole"
 )
@@ -48,21 +47,17 @@ func main() {
 	// Show output based on arguments and options
 	switch arg {
 	case "summary":
-		summary := &gohole.PiResponseSummary{}
-		gohole.ParseJSON(summary, c.Get("summaryRaw"))
+		summary := c.Summary()
 		summary.Show()
 	case "blocked":
-		topItems := &gohole.PiResponseTop{}
-		gohole.ParseJSON(topItems, c.Get("topItems="+strconv.Itoa(*maxNum)))
+		topItems := c.Top(*maxNum)
 		topItems.ShowBlocked()
 	case "queries":
-		topItems := &gohole.PiResponseTop{}
-		gohole.ParseJSON(topItems, c.Get("topItems="+strconv.Itoa(*maxNum)))
+		topItems := c.Top(*maxNum)
 		topItems.ShowQueries()
 	case "clients":
-		clients := &gohole.PiResponseTopClients{}
-		gohole.ParseJSON(clients, c.Get("topClients="+strconv.Itoa(*maxNum)))
-		clients.ShowClients()
+		clients := c.Clients(*maxNum)
+		clients.Show()
 	default:
 		usage()
 	}

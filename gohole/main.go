@@ -7,42 +7,13 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strconv"
 )
-
-// ParseJSON conterts raw binary output into object
-func ParseJSON(r interface{}, body []byte) error {
-	err := json.Unmarshal(body, r)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return err
-}
 
 // PiConnector type
 type PiConnector struct {
 	Host  string
 	Token string
-}
-
-// Get request to API
-func (r *PiConnector) Get(endpoint string) []byte {
-	var requestString = "http://" + r.Host + "/admin/api.php?" + endpoint
-	if r.Token != "" {
-		requestString += "&auth=" + r.Token
-	}
-
-	resp, err := http.Get(requestString)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return body
 }
 
 // PiResponseSummary type
@@ -68,6 +39,72 @@ type PiResponseTop struct {
 // PiResponseTopClients type
 type PiResponseTopClients struct {
 	Clients map[string]int `json:"top_sources"`
+}
+
+// ParseJSON conterts raw binary output into object
+func ParseJSON(r interface{}, body []byte) error {
+	err := json.Unmarshal(body, r)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return err
+}
+
+// Get request to API
+func (r *PiConnector) Get(endpoint string) []byte {
+	var requestString = "http://" + r.Host + "/admin/api.php?" + endpoint
+	if r.Token != "" {
+		requestString += "&auth=" + r.Token
+	}
+
+	resp, err := http.Get(requestString)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return body
+}
+
+// Summary implemets summaryRaw API endpoint
+func (r *PiConnector) Summary() PiResponseSummary {
+	bs := r.Get("summaryRaw")
+	s := &PiResponseSummary{}
+
+	err := json.Unmarshal(bs, s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return *s
+}
+
+// Top implemets topItems API endpoint
+func (r *PiConnector) Top(n int) PiResponseTop {
+	bs := r.Get("topItems=" + strconv.Itoa(n))
+	s := &PiResponseTop{}
+
+	err := json.Unmarshal(bs, s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return *s
+}
+
+// Clients implemets topClients API endpoint
+func (r *PiConnector) Clients(n int) PiResponseTopClients {
+	bs := r.Get("topClients=" + strconv.Itoa(n))
+	s := &PiResponseTopClients{}
+
+	err := json.Unmarshal(bs, s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return *s
 }
 
 // Show returns 24h Summary of PiHole System
@@ -115,8 +152,8 @@ func (r *PiResponseTop) ShowQueries() {
 	}
 }
 
-// ShowClients returns sorted top clients over last 24h
-func (r *PiResponseTopClients) ShowClients() {
+// Show returns sorted top clients over last 24h
+func (r *PiResponseTopClients) Show() {
 	reverseMapClients := make(map[int]string)
 	var freqClients []int
 
