@@ -10,6 +10,16 @@ Get [Pi-Hole](https://github.com/pi-hole/pi-hole) metrics remotely using command
 go build -o phstat
 ```
 
+## set environment variables
+* get `PIHOLE_TOKEN` here http://your-pi-hole-ip/admin/settings.php?tab=api
+* update your `.bashrc`, `.zshrc` with:
+
+```bash
+export PIHOLE_HOST=192.168.1.2
+export PIHOLE_TOKEN=longtokenstring
+```
+
+
 ## use
 
 ```bash
