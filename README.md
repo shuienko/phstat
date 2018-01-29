@@ -3,7 +3,7 @@ Get [Pi-Hole](https://github.com/pi-hole/pi-hole) metrics remotely using command
 
 ## download
 
-[Releases](https://github.com/shuienko/phstat/releases)
+Get binary from [Releases](https://github.com/shuienko/phstat/releases) and save it somewhere in your `$PATH`
 
 ## or build yourself
 ```bash
