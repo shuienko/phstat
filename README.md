@@ -29,7 +29,7 @@ Usage: phstat [-n NUMBER] summary|blocked|queries|clients
     	number of returned entries (default 10)
 ```
 
-# example
+## example
 
 ```bash
 $ phstat -n 5 clients
