@@ -12,10 +12,10 @@ go build -o phstat
 
 ## set environment variables
 * get `PIHOLE_TOKEN` here http://your-pi-hole-ip/admin/settings.php?tab=api
-* update your `.bashrc`, `.zshrc` with:
+* add to your `.bashrc` or `.zshrc`:
 
 ```bash
-export PIHOLE_HOST=192.168.1.2
+export PIHOLE_HOST=your-pi-hole-ip
 export PIHOLE_TOKEN=longtokenstring
 ```
 
