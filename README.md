@@ -7,7 +7,7 @@ Get binary from [Releases](https://github.com/shuienko/phstat/releases) and save
 
 ## or build yourself
 ```bash
-go get github.com/shuienko/phstat/gohole
+go get github.com/shuienko/go-pihole
 go build -o phstat
 ```
 
