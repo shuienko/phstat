@@ -10,14 +10,14 @@ import (
 	"strconv"
 )
 
-// PiConnector type
-type PiConnector struct {
+// PiHConnector type
+type PiHConnector struct {
 	Host  string
 	Token string
 }
 
-// PiResponseSummary type
-type PiResponseSummary struct {
+// PiHSummary type
+type PiHSummary struct {
 	BlockedDomains   int     `json:"domains_being_blocked"`
 	QueriesToday     int     `json:"dns_queries_today"`
 	BlockedToday     int     `json:"ads_blocked_today"`
@@ -30,19 +30,19 @@ type PiResponseSummary struct {
 	Status           string  `json:"status"`
 }
 
-// PiResponseTop type
-type PiResponseTop struct {
+// PiHTopItems type
+type PiHTopItems struct {
 	Queries map[string]int `json:"top_queries"`
 	Blocked map[string]int `json:"top_ads"`
 }
 
-// PiResponseTopClients type
-type PiResponseTopClients struct {
+// PiHTopClients type
+type PiHTopClients struct {
 	Clients map[string]int `json:"top_sources"`
 }
 
 // Get request to API
-func (r *PiConnector) Get(endpoint string) []byte {
+func (r *PiHConnector) Get(endpoint string) []byte {
 	var requestString = "http://" + r.Host + "/admin/api.php?" + endpoint
 	if r.Token != "" {
 		requestString += "&auth=" + r.Token
@@ -63,9 +63,9 @@ func (r *PiConnector) Get(endpoint string) []byte {
 }
 
 // Summary implemets summaryRaw API endpoint
-func (r *PiConnector) Summary() PiResponseSummary {
+func (r *PiHConnector) Summary() PiHSummary {
 	bs := r.Get("summaryRaw")
-	s := &PiResponseSummary{}
+	s := &PiHSummary{}
 
 	err := json.Unmarshal(bs, s)
 	if err != nil {
@@ -75,9 +75,9 @@ func (r *PiConnector) Summary() PiResponseSummary {
 }
 
 // Top implemets topItems API endpoint
-func (r *PiConnector) Top(n int) PiResponseTop {
+func (r *PiHConnector) Top(n int) PiHTopItems {
 	bs := r.Get("topItems=" + strconv.Itoa(n))
-	s := &PiResponseTop{}
+	s := &PiHTopItems{}
 
 	err := json.Unmarshal(bs, s)
 	if err != nil {
@@ -87,9 +87,9 @@ func (r *PiConnector) Top(n int) PiResponseTop {
 }
 
 // Clients implemets topClients API endpoint
-func (r *PiConnector) Clients(n int) PiResponseTopClients {
+func (r *PiHConnector) Clients(n int) PiHTopClients {
 	bs := r.Get("topClients=" + strconv.Itoa(n))
-	s := &PiResponseTopClients{}
+	s := &PiHTopClients{}
 
 	err := json.Unmarshal(bs, s)
 	if err != nil {
@@ -99,7 +99,7 @@ func (r *PiConnector) Clients(n int) PiResponseTopClients {
 }
 
 // Show returns 24h Summary of PiHole System
-func (r *PiResponseSummary) Show() {
+func (r *PiHSummary) Show() {
 	fmt.Println("=== 24h Summary:")
 	fmt.Printf("- Blocked Domains: %d\n", r.BlockedToday)
 	fmt.Printf("- Blocked Percentage: %.2f%%\n", r.BlockedPercent)
@@ -108,7 +108,7 @@ func (r *PiResponseSummary) Show() {
 }
 
 // ShowBlocked returns sorted top Blocked domains over last 24h
-func (r *PiResponseTop) ShowBlocked() {
+func (r *PiHTopItems) ShowBlocked() {
 	reverseMapBlocked := make(map[int]string)
 	var freqBlocked []int
 
@@ -126,7 +126,7 @@ func (r *PiResponseTop) ShowBlocked() {
 }
 
 // ShowQueries returns sorted top queries over last 24h
-func (r *PiResponseTop) ShowQueries() {
+func (r *PiHTopItems) ShowQueries() {
 	reverseMapQueries := make(map[int]string)
 	var freqQueries []int
 
@@ -144,7 +144,7 @@ func (r *PiResponseTop) ShowQueries() {
 }
 
 // Show returns sorted top clients over last 24h
-func (r *PiResponseTopClients) Show() {
+func (r *PiHTopClients) Show() {
 	reverseMapClients := make(map[int]string)
 	var freqClients []int
 

@@ -27,7 +27,7 @@ func main() {
 	}
 
 	// Create connector object
-	c := gohole.PiConnector{
+	ph := gohole.PiHConnector{
 		Host:  piholeHost,
 		Token: apiToken,
 	}
@@ -47,16 +47,16 @@ func main() {
 	// Show output based on arguments and options
 	switch arg {
 	case "summary":
-		summary := c.Summary()
+		summary := ph.Summary()
 		summary.Show()
 	case "blocked":
-		topItems := c.Top(*maxNum)
+		topItems := ph.Top(*maxNum)
 		topItems.ShowBlocked()
 	case "queries":
-		topItems := c.Top(*maxNum)
+		topItems := ph.Top(*maxNum)
 		topItems.ShowQueries()
 	case "clients":
-		clients := c.Clients(*maxNum)
+		clients := ph.Clients(*maxNum)
 		clients.Show()
 	default:
 		usage()
