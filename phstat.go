@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/shuienko/phstat/gohole"
+	"github.com/shuienko/go-pihole"
 )
 
 func usage() {
