@@ -1,5 +1,5 @@
-# phstat
-Get [Pi-Hole](https://github.com/pi-hole/pi-hole) metrics remotely using command line. [![Build Status](https://travis-ci.org/shuienko/phstat.svg?branch=master)](https://travis-ci.org/shuienko/phstat)
+# phstat [![Build Status](https://travis-ci.org/shuienko/phstat.svg?branch=master)](https://travis-ci.org/shuienko/phstat)
+Get [Pi-Hole](https://github.com/pi-hole/pi-hole) metrics remotely using command line.
 
 ## download
 
