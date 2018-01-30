@@ -47,7 +47,7 @@ func main() {
 	// Show output based on arguments and options
 	switch arg {
 	case "summary":
-		summary := ph.Summary()
+		summary := ph.SummaryRaw()
 		summary.Show()
 	case "blocked":
 		topItems := ph.Top(*maxNum)
@@ -58,6 +58,43 @@ func main() {
 	case "clients":
 		clients := ph.Clients(*maxNum)
 		clients.Show()
+	case "type":
+		phtype := ph.Type()
+		fmt.Println(phtype.Type)
+	case "version":
+		phversion := ph.Version()
+		fmt.Println(phversion.Version)
+	case "summaryRaw":
+		summary := ph.Summary()
+		fmt.Println(summary)
+	case "timedata":
+		data := ph.TimeData()
+		fmt.Println(data)
+	case "fd":
+		fd := ph.ForwardDestinations()
+		fmt.Println(fd)
+	case "qt":
+		qt := ph.QueryTypes()
+		fmt.Println(qt)
+	case "allqueries":
+		aq := ph.Queries()
+		fmt.Println(aq.Data[0], len(aq.Data))
+	case "enable":
+		err := ph.Enable()
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("Enabled")
+		}
+	case "disable":
+		err := ph.Disable()
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("Disabled")
+		}
+	case "recent":
+		fmt.Println(ph.RecentBlocked())
 	default:
 		usage()
 	}
