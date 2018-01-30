@@ -60,10 +60,10 @@ func main() {
 		clients.Show()
 	case "type":
 		phtype := ph.Type()
-		fmt.Println(phtype.Type)
+		fmt.Println("API type:", phtype.Type)
 	case "version":
 		phversion := ph.Version()
-		fmt.Println(phversion.Version)
+		fmt.Println("API version:", phversion.Version)
 	case "enable":
 		err := ph.Enable()
 		if err != nil {
