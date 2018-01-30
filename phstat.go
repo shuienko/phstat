@@ -10,7 +10,7 @@ import (
 )
 
 func usage() {
-	fmt.Println("Usage:", os.Args[0], "[-n NUMBER] summary|blocked|queries|clients")
+	fmt.Println("Usage:", os.Args[0], "[-n NUMBER] summary|blocked|queries|clients|type|version|enable|disable|recent")
 	flag.PrintDefaults()
 }
 
@@ -64,21 +64,6 @@ func main() {
 	case "version":
 		phversion := ph.Version()
 		fmt.Println(phversion.Version)
-	case "summaryRaw":
-		summary := ph.Summary()
-		fmt.Println(summary)
-	case "timedata":
-		data := ph.TimeData()
-		fmt.Println(data)
-	case "fd":
-		fd := ph.ForwardDestinations()
-		fmt.Println(fd)
-	case "qt":
-		qt := ph.QueryTypes()
-		fmt.Println(qt)
-	case "allqueries":
-		aq := ph.Queries()
-		fmt.Println(aq.Data[0], len(aq.Data))
 	case "enable":
 		err := ph.Enable()
 		if err != nil {
