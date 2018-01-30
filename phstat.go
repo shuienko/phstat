@@ -6,11 +6,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/shuienko/phstat/gohole"
+	"github.com/shuienko/go-pihole"
 )
 
 func usage() {
-	fmt.Println("Usage:", os.Args[0], "[-n NUMBER] summary|blocked|queries|clients")
+	fmt.Println("Usage:", os.Args[0], "[-n NUMBER] summary|blocked|queries|clients|type|version|enable|disable|recent")
 	flag.PrintDefaults()
 }
 
@@ -27,7 +27,7 @@ func main() {
 	}
 
 	// Create connector object
-	c := gohole.PiConnector{
+	ph := gohole.PiHConnector{
 		Host:  piholeHost,
 		Token: apiToken,
 	}
@@ -47,17 +47,39 @@ func main() {
 	// Show output based on arguments and options
 	switch arg {
 	case "summary":
-		summary := c.Summary()
+		summary := ph.SummaryRaw()
 		summary.Show()
 	case "blocked":
-		topItems := c.Top(*maxNum)
+		topItems := ph.Top(*maxNum)
 		topItems.ShowBlocked()
 	case "queries":
-		topItems := c.Top(*maxNum)
+		topItems := ph.Top(*maxNum)
 		topItems.ShowQueries()
 	case "clients":
-		clients := c.Clients(*maxNum)
+		clients := ph.Clients(*maxNum)
 		clients.Show()
+	case "type":
+		phtype := ph.Type()
+		fmt.Println(phtype.Type)
+	case "version":
+		phversion := ph.Version()
+		fmt.Println(phversion.Version)
+	case "enable":
+		err := ph.Enable()
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("Enabled")
+		}
+	case "disable":
+		err := ph.Disable()
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("Disabled")
+		}
+	case "recent":
+		fmt.Println(ph.RecentBlocked())
 	default:
 		usage()
 	}
