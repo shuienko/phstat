@@ -24,7 +24,7 @@ export PIHOLE_TOKEN=longtokenstring
 ## use
 
 ```bash
-Usage: phstat [-n NUMBER] summary|blocked|queries|clients
+Usage: phstat [-n NUMBER] summary|blocked|queries|clients|type|version|enable|disable|recent
   -n number
     	number of returned entries (default 10)
 ```
