@@ -7,7 +7,7 @@ Get binary from [Releases](https://github.com/shuienko/phstat/releases) and save
 
 ## or build yourself
 ```bash
-go get github.com/shuienko/go-pihole
+dep ensure
 go build -o phstat
 ```
 
@@ -24,19 +24,13 @@ export PIHOLE_TOKEN=longtokenstring
 ## use
 
 ```bash
-Usage: phstat [-n NUMBER] summary|blocked|queries|clients|type|version|enable|disable|recent
-  -n number
-    	number of returned entries (default 10)
+Pi-Hole Dashboard. Docs: https://github.com/shuienko/phstat/blob/master/README.md
+Usage: phstat [-h] [-n seconds]
+  -h	show this page
+  -n seconds
+    	update interval in seconds (default 2)
 ```
 
-## example
+## example output
 
-```bash
-$ phstat -n 5 clients
-=== Clients over last 24h:
-- 192.168.1.72 : 7231
-- 192.168.1.46 : 6359
-- 192.168.1.60 : 1667
-- 192.168.1.67 : 721
-- 192.168.1.61 : 685
-```
+
