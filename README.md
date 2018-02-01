@@ -12,8 +12,8 @@ go build -o phstat
 ```
 
 ## set environment variables
-* get `PIHOLE_TOKEN` here http://your-pi-hole-ip/admin/settings.php?tab=api
-* add to your `.bashrc` or `.zshrc`:
+* get `PIHOLE_TOKEN` here http://your-pi-hole-ip/admin/settings.php?tab=api or here `/etc/pihole/setupVars.conf`
+* add it to your `.bashrc` or `.zshrc`:
 
 ```bash
 export PIHOLE_HOST=your-pi-hole-ip
@@ -23,7 +23,7 @@ export PIHOLE_TOKEN=longtokenstring
 
 ## use
 
-```bash
+```
 Pi-Hole Dashboard. Docs: https://github.com/shuienko/phstat/blob/master/README.md
 Usage: phstat [-h] [-n seconds]
   -h	show this page
