@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 
+	ui "github.com/gizak/termui"
 	"github.com/shuienko/go-pihole"
 )
 
@@ -32,55 +34,98 @@ func main() {
 		Token: apiToken,
 	}
 
-	// Get command line arguments
-	var maxNum = flag.Int("n", 10, "`number` of returned entries")
-	flag.Parse()
+	err := ui.Init()
+	if err != nil {
+		panic(err)
+	}
+	defer ui.Close()
 
-	var arg string
-	if len(flag.Args()) > 0 {
-		arg = flag.Args()[0]
-	} else {
-		usage()
-		os.Exit(1)
+	// Summary
+	s := ph.Summary()
+	sData := []string{
+		"Status: [" + s.Status + "](fg-blue)",
+		"Blocked Domains: [" + s.AdsBlocked + "](fg-blue)",
+		"Blocked Percentage: [" + s.AdsPercentage + "](fg-blue)",
+		"DNS Queries Today: [" + s.DNSQueries + "](fg-blue)",
+		"Domains Being Blocked: [" + s.DomainsBlocked + "](fg-blue)",
+		"Queries Cached: [" + s.QueriesCached + "](fg-blue)",
+		"Queries Forwarded: [" + s.QueriesForwarded + "](fg-blue)",
+		"Clients Ever Seen: [" + s.ClientsEverSeen + "](fg-blue)",
+		"Unique Clients: [" + s.UniqueClients + "](fg-blue)",
+		"Unique Domains: [" + s.UniqueDomains + "](fg-blue)",
 	}
 
-	// Show output based on arguments and options
-	switch arg {
-	case "summary":
-		summary := ph.SummaryRaw()
-		summary.Show()
-	case "blocked":
-		topItems := ph.Top(*maxNum)
-		topItems.ShowBlocked()
-	case "queries":
-		topItems := ph.Top(*maxNum)
-		topItems.ShowQueries()
-	case "clients":
-		clients := ph.Clients(*maxNum)
-		clients.Show()
-	case "type":
-		phtype := ph.Type()
-		fmt.Println("API type:", phtype.Type)
-	case "version":
-		phversion := ph.Version()
-		fmt.Println("API version:", phversion.Version)
-	case "enable":
-		err := ph.Enable()
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Println("Enabled")
-		}
-	case "disable":
-		err := ph.Disable()
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Println("Disabled")
-		}
-	case "recent":
-		fmt.Println(ph.RecentBlocked())
-	default:
-		usage()
+	ls1 := ui.NewList()
+	ls1.Items = sData
+	ls1.ItemFgColor = ui.ColorYellow
+	ls1.BorderLabel = "Summary"
+	ls1.Height = 10
+	ls1.Width = 35
+	ls1.PaddingLeft = 1
+	ls1.Y = 0
+
+	// Top Blocked
+	b := ph.Top(10).Blocked
+	var bData []string
+
+	reverseMapBlocked := make(map[int]string)
+	var freqBlocked []int
+
+	for k, v := range b {
+		reverseMapBlocked[v] = k
+		freqBlocked = append(freqBlocked, v)
 	}
+
+	sort.Ints(freqBlocked)
+
+	for i := len(freqBlocked) - 1; i >= 0; i-- {
+		row := fmt.Sprintf("[%5d](fg-blue): %s", freqBlocked[i], reverseMapBlocked[freqBlocked[i]])
+		bData = append(bData, row)
+	}
+
+	ls2 := ui.NewList()
+	ls2.Items = bData
+	ls2.ItemFgColor = ui.ColorYellow
+	ls2.BorderLabel = "Top Blocked"
+	ls2.Height = 10
+	ls2.Width = 35
+	ls2.PaddingLeft = 1
+	ls2.Y = 0
+	ls2.X = 37
+
+	// Top Queries
+	q := ph.Top(10).Queries
+	var qData []string
+
+	reverseMapQueries := make(map[int]string)
+	var freqQueries []int
+
+	for k, v := range q {
+		reverseMapQueries[v] = k
+		freqQueries = append(freqQueries, v)
+	}
+
+	sort.Ints(freqQueries)
+
+	for i := len(freqQueries) - 1; i >= 0; i-- {
+		row := fmt.Sprintf("[%5d](fg-blue): %s", freqQueries[i], reverseMapQueries[freqQueries[i]])
+		qData = append(qData, row)
+	}
+
+	ls3 := ui.NewList()
+	ls3.Items = qData
+	ls3.ItemFgColor = ui.ColorYellow
+	ls3.BorderLabel = "Top Queries"
+	ls3.Height = 10
+	ls3.Width = 35
+	ls3.PaddingLeft = 1
+	ls3.Y = 10
+	ls3.X = 37
+
+	ui.Render(ls1, ls2, ls3)
+	ui.Handle("/sys/kbd/q", func(ui.Event) {
+		ui.StopLoop()
+	})
+	ui.Loop()
+
 }
