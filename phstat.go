@@ -11,9 +11,93 @@ import (
 	"github.com/shuienko/go-pihole"
 )
 
+const (
+	readme = "https://github.com/shuienko/phstat/blob/master/README.md"
+	nItems = 10
+)
+
+// Show help page
 func usage() {
-	fmt.Println("Usage:", os.Args[0], "[-n NUMBER] summary|blocked|queries|clients|type|version|enable|disable|recent")
+	fmt.Println("Pi-Hole Dashboard. Docs:", readme)
+	fmt.Println("Usage:", os.Args[0], "[-h] [-n seconds]")
 	flag.PrintDefaults()
+}
+
+// Sort and reverse map
+func sortReverseMap(m map[string]int) (map[int]string, []int) {
+	reverseMap := make(map[int]string)
+	var freq []int
+
+	for k, v := range m {
+		reverseMap[v] = k
+		freq = append(freq, v)
+	}
+
+	sort.Ints(freq)
+
+	return reverseMap, freq
+}
+
+// Show summary
+func getSummary(ph gohole.PiHConnector) []string {
+	s := ph.Summary()
+	sData := []string{
+		"Status: [" + s.Status + "](fg-blue)",
+		"Blocked Domains: [" + s.AdsBlocked + "](fg-blue)",
+		"Blocked Percentage: [" + s.AdsPercentage + "%](fg-blue)",
+		"DNS Queries Today: [" + s.DNSQueries + "](fg-blue)",
+		"Domains Being Blocked: [" + s.DomainsBlocked + "](fg-blue)",
+		"Queries Cached: [" + s.QueriesCached + "](fg-blue)",
+		"Queries Forwarded: [" + s.QueriesForwarded + "](fg-blue)",
+		"Clients Ever Seen: [" + s.ClientsEverSeen + "](fg-blue)",
+		"Unique Clients: [" + s.UniqueClients + "](fg-blue)",
+		"Unique Domains: [" + s.UniqueDomains + "](fg-blue)",
+	}
+	return sData
+}
+
+// Show top blocked DNS records
+func getTopBlocked(ph gohole.PiHConnector) []string {
+	b := ph.Top(nItems).Blocked
+	var bData []string
+
+	reverseMapBlocked, freqBlocked := sortReverseMap(b)
+
+	for i := len(freqBlocked) - 1; i >= 0; i-- {
+		row := fmt.Sprintf("[%5d](fg-blue): %s", freqBlocked[i], reverseMapBlocked[freqBlocked[i]])
+		bData = append(bData, row)
+	}
+	return bData
+}
+
+// Show top DNS Queries
+func getTopQueries(ph gohole.PiHConnector) []string {
+	q := ph.Top(nItems).Queries
+	var qData []string
+
+	reverseMapQueries, freqQueries := sortReverseMap(q)
+
+	for i := len(freqQueries) - 1; i >= 0; i-- {
+		row := fmt.Sprintf("[%5d](fg-blue): %s", freqQueries[i], reverseMapQueries[freqQueries[i]])
+		qData = append(qData, row)
+	}
+
+	return qData
+}
+
+// Show top clients
+func getTopClients(ph gohole.PiHConnector) []string {
+	c := ph.Clients(nItems).Clients
+	var cData []string
+
+	reverseMapClients, freqClients := sortReverseMap(c)
+
+	for i := len(freqClients) - 1; i >= 0; i-- {
+		row := fmt.Sprintf("[%5d](fg-blue): %s", freqClients[i], reverseMapClients[freqClients[i]])
+		cData = append(cData, row)
+	}
+
+	return cData
 }
 
 func main() {
@@ -34,6 +118,17 @@ func main() {
 		Token: apiToken,
 	}
 
+	// Parse options
+	var updateInterval = flag.Uint64("n", 2, "update interval in `seconds`")
+	var help = flag.Bool("h", false, "show this page")
+	flag.Parse()
+
+	if *help {
+		usage()
+		os.Exit(0)
+	}
+
+	// Start UI
 	err := ui.Init()
 	if err != nil {
 		panic(err)
@@ -69,22 +164,8 @@ func main() {
 	par2.X = 0
 
 	// Summary
-	s := ph.Summary()
-	sData := []string{
-		"Status: [" + s.Status + "](fg-blue)",
-		"Blocked Domains: [" + s.AdsBlocked + "](fg-blue)",
-		"Blocked Percentage: [" + s.AdsPercentage + "%](fg-blue)",
-		"DNS Queries Today: [" + s.DNSQueries + "](fg-blue)",
-		"Domains Being Blocked: [" + s.DomainsBlocked + "](fg-blue)",
-		"Queries Cached: [" + s.QueriesCached + "](fg-blue)",
-		"Queries Forwarded: [" + s.QueriesForwarded + "](fg-blue)",
-		"Clients Ever Seen: [" + s.ClientsEverSeen + "](fg-blue)",
-		"Unique Clients: [" + s.UniqueClients + "](fg-blue)",
-		"Unique Domains: [" + s.UniqueDomains + "](fg-blue)",
-	}
-
 	ls1 := ui.NewList()
-	ls1.Items = sData
+	ls1.Items = getSummary(ph)
 	ls1.ItemFgColor = ui.ColorYellow
 	ls1.BorderLabel = "Summary"
 	ls1.Height = 10
@@ -94,26 +175,8 @@ func main() {
 	ls1.X = 0
 
 	// Top Blocked
-	b := ph.Top(10).Blocked
-	var bData []string
-
-	reverseMapBlocked := make(map[int]string)
-	var freqBlocked []int
-
-	for k, v := range b {
-		reverseMapBlocked[v] = k
-		freqBlocked = append(freqBlocked, v)
-	}
-
-	sort.Ints(freqBlocked)
-
-	for i := len(freqBlocked) - 1; i >= 0; i-- {
-		row := fmt.Sprintf("[%5d](fg-blue): %s", freqBlocked[i], reverseMapBlocked[freqBlocked[i]])
-		bData = append(bData, row)
-	}
-
 	ls2 := ui.NewList()
-	ls2.Items = bData
+	ls2.Items = getTopBlocked(ph)
 	ls2.ItemFgColor = ui.ColorYellow
 	ls2.BorderLabel = "Top Blocked"
 	ls2.Height = 10
@@ -123,26 +186,8 @@ func main() {
 	ls2.X = 42
 
 	// Top Queries
-	q := ph.Top(10).Queries
-	var qData []string
-
-	reverseMapQueries := make(map[int]string)
-	var freqQueries []int
-
-	for k, v := range q {
-		reverseMapQueries[v] = k
-		freqQueries = append(freqQueries, v)
-	}
-
-	sort.Ints(freqQueries)
-
-	for i := len(freqQueries) - 1; i >= 0; i-- {
-		row := fmt.Sprintf("[%5d](fg-blue): %s", freqQueries[i], reverseMapQueries[freqQueries[i]])
-		qData = append(qData, row)
-	}
-
 	ls3 := ui.NewList()
-	ls3.Items = qData
+	ls3.Items = getTopQueries(ph)
 	ls3.ItemFgColor = ui.ColorYellow
 	ls3.BorderLabel = "Top Queries"
 	ls3.Height = 10
@@ -152,26 +197,8 @@ func main() {
 	ls3.X = 42
 
 	// Top Clients
-	c := ph.Clients(10).Clients
-	var cData []string
-
-	reverseMapClients := make(map[int]string)
-	var freqClients []int
-
-	for k, v := range c {
-		reverseMapClients[v] = k
-		freqClients = append(freqClients, v)
-	}
-
-	sort.Ints(freqClients)
-
-	for i := len(freqClients) - 1; i >= 0; i-- {
-		row := fmt.Sprintf("[%5d](fg-blue): %s", freqClients[i], reverseMapClients[freqClients[i]])
-		cData = append(cData, row)
-	}
-
 	ls4 := ui.NewList()
-	ls4.Items = cData
+	ls4.Items = getTopClients(ph)
 	ls4.ItemFgColor = ui.ColorYellow
 	ls4.BorderLabel = "Top Clients"
 	ls4.Height = 10
@@ -180,18 +207,23 @@ func main() {
 	ls4.Y = 16
 	ls4.X = 0
 
+	// Render
 	ui.Render(ls1, ls2, ls3, ls4, par0, par1, par2)
 	ui.Handle("/sys/kbd/q", func(ui.Event) {
 		ui.StopLoop()
 	})
 
+	// Render periodically
 	ui.Handle("/timer/1s", func(e ui.Event) {
 		t := e.Data.(ui.EvtTimer)
-		if t.Count%2 == 0 {
+		if t.Count%*updateInterval == 0 {
 			par2.Text = "Last Blocked: [" + ph.RecentBlocked() + "](fg-blue)"
-			ui.Render(par2)
+			ls1.Items = getSummary(ph)
+			ls2.Items = getTopBlocked(ph)
+			ls3.Items = getTopQueries(ph)
+			ls4.Items = getTopClients(ph)
+			ui.Render(par2, ls1, ls2, ls3, ls4)
 		}
 	})
 	ui.Loop()
-
 }
