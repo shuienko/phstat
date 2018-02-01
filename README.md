@@ -1,4 +1,4 @@
-# phstat [![Build Status](https://travis-ci.org/shuienko/phstat.svg?branch=master)](https://travis-ci.org/shuienko/phstat)
+# phstat [![Build Status](https://travis-ci.org/shuienko/phstat.svg?branch=master)](https://travis-ci.org/shuienko/phstat) [![Go Report Card](https://goreportcard.com/badge/github.com/shuienko/phstat)](https://goreportcard.com/report/github.com/shuienko/phstat)
 Get [Pi-Hole](https://github.com/pi-hole/pi-hole) metrics remotely using command line.
 
 ## download
