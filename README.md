@@ -31,6 +31,7 @@ Usage: phstat [-h] [-n seconds]
     	update interval in seconds (default 2)
 ```
 
-## example output
+## ui example
+<img src="./phstat.png" alt="macOC 10.13; iTerm2 app; Menlo Regular 12pt.)" width="80%">
 
 
