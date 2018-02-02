@@ -7,7 +7,8 @@ Get binary from [Releases](https://github.com/shuienko/phstat/releases) and save
 
 ## or build yourself
 ```bash
-dep ensure
+go get github.com/gizak/termui
+go get github.com/shuienko/go-pihole
 go build -o phstat
 ```
 
