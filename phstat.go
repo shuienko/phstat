@@ -135,14 +135,15 @@ func main() {
 	}
 	defer ui.Close()
 
+	termWidth := ui.TermWidth()
 	par0 := ui.NewPar("Pi-Hole Dashboard " + "[http://" + ph.Host + "/admin/index.php](fg-blue)")
 	par0.Height = 1
 	par0.Width = 82
 	par0.Border = false
 	par0.TextFgColor = ui.ColorGreen
 	par0.PaddingLeft = 1
-	par0.Y = 0
-	par0.Y = 0
+	par0.Y = 1
+	par0.Float = ui.AlignCenterHorizontal
 
 	apiString := fmt.Sprintf("API: [%.1f %s](fg-blue)", ph.Version().Version, ph.Type().Type)
 	par1 := ui.NewPar(apiString)
@@ -152,7 +153,7 @@ func main() {
 	par1.TextFgColor = ui.ColorYellow
 	par1.PaddingLeft = 1
 	par1.Y = 2
-	par1.X = 0
+	par1.Float = ui.AlignCenterHorizontal
 
 	par2 := ui.NewPar("Last Blocked: [" + ph.RecentBlocked() + "](fg-blue)")
 	par2.Height = 3
@@ -161,51 +162,51 @@ func main() {
 	par2.TextFgColor = ui.ColorYellow
 	par2.PaddingLeft = 1
 	par2.Y = 3
-	par2.X = 0
+	par2.Float = ui.AlignCenterHorizontal
 
 	// Summary
 	ls1 := ui.NewList()
 	ls1.Items = getSummary(ph)
 	ls1.ItemFgColor = ui.ColorYellow
 	ls1.BorderLabel = "Summary"
-	ls1.Height = 10
+	ls1.Height = 12
 	ls1.Width = 40
 	ls1.PaddingLeft = 1
 	ls1.Y = 6
-	ls1.X = 0
+	ls1.X = ui.TermWidth()/2 - 41
 
 	// Top Blocked
 	ls2 := ui.NewList()
 	ls2.Items = getTopBlocked(ph)
 	ls2.ItemFgColor = ui.ColorYellow
 	ls2.BorderLabel = "Top Blocked"
-	ls2.Height = 10
+	ls2.Height = 12
 	ls2.Width = 40
 	ls2.PaddingLeft = 1
 	ls2.Y = 6
-	ls2.X = 42
+	ls2.X = ui.TermWidth()/2 + 1
 
 	// Top Queries
 	ls3 := ui.NewList()
 	ls3.Items = getTopQueries(ph)
 	ls3.ItemFgColor = ui.ColorYellow
 	ls3.BorderLabel = "Top Queries"
-	ls3.Height = 10
+	ls3.Height = 12
 	ls3.Width = 40
 	ls3.PaddingLeft = 1
-	ls3.Y = 16
-	ls3.X = 42
+	ls3.Y = 18
+	ls3.X = ui.TermWidth()/2 + 1
 
 	// Top Clients
 	ls4 := ui.NewList()
 	ls4.Items = getTopClients(ph)
 	ls4.ItemFgColor = ui.ColorYellow
 	ls4.BorderLabel = "Top Clients"
-	ls4.Height = 10
+	ls4.Height = 12
 	ls4.Width = 40
 	ls4.PaddingLeft = 1
-	ls4.Y = 16
-	ls4.X = 0
+	ls4.Y = 18
+	ls4.X = ui.TermWidth()/2 - 41
 
 	// Render
 	ui.Render(ls1, ls2, ls3, ls4, par0, par1, par2)
@@ -222,7 +223,17 @@ func main() {
 			ls2.Items = getTopBlocked(ph)
 			ls3.Items = getTopQueries(ph)
 			ls4.Items = getTopClients(ph)
-			ui.Render(par2, ls1, ls2, ls3, ls4)
+			if ui.TermWidth() != termWidth {
+				ls1.X = ui.TermWidth()/2 - 41
+				ls2.X = ui.TermWidth()/2 + 1
+				ls3.X = ui.TermWidth()/2 + 1
+				ls4.X = ui.TermWidth()/2 - 41
+
+				termWidth = ui.TermWidth()
+				ui.Clear()
+			}
+
+			ui.Render(par0, par1, par2, ls1, ls2, ls3, ls4)
 		}
 	})
 	ui.Loop()
