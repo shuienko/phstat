@@ -7,8 +7,6 @@ Get binary from [Releases](https://github.com/shuienko/phstat/releases) and save
 
 ## or build yourself
 ```bash
-go get github.com/gizak/termui
-go get github.com/shuienko/go-pihole
 go build -o phstat
 ```
 
@@ -34,5 +32,3 @@ Usage: phstat [-h] [-n seconds]
 
 ## ui example
 <img src="./phstat.png" alt="macOC 10.13; iTerm2 app; Menlo Regular 12pt.)" width="80%">
-
-
