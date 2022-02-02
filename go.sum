@@ -20,8 +20,8 @@ github.com/nsf/termbox-go v0.0.0-20180129072728-88b7b944be8b h1:juxXUBpBuF6yPbNH
 github.com/nsf/termbox-go v0.0.0-20180129072728-88b7b944be8b/go.mod h1:IuKpRQcYE1Tfu+oAQqaLisqDeXgjyyltCfsaoYN18NQ=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/shuienko/go-pihole v0.0.0-20180131165339-5440b2b9394d h1:39RN3gBKhGesIQXSk8/IJj4GcPAydMR5iCTMy7I+ZBU=
-github.com/shuienko/go-pihole v0.0.0-20180131165339-5440b2b9394d/go.mod h1:DWm415lHK2ftcGlBOa8qWCU6BzpgkvY0uzW9AMrFZCk=
+github.com/shuienko/go-pihole v0.0.0-20220202112044-2a1fd4338ace h1:NkyRmSXQAydl5xmZt/bkC2XHTwwuD0mD5v2KtLokcd4=
+github.com/shuienko/go-pihole v0.0.0-20220202112044-2a1fd4338ace/go.mod h1:DWm415lHK2ftcGlBOa8qWCU6BzpgkvY0uzW9AMrFZCk=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
