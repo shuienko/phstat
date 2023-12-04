@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"sort"
-	"strconv"
 
 	ui "github.com/gizak/termui"
 	gohole "github.com/shuienko/go-pihole"
@@ -44,15 +43,15 @@ func getSummary(ph gohole.PiHConnector) []string {
 	s := ph.Summary()
 	sData := []string{
 		"Status: [" + s.Status + "](fg-blue)",
-		"Blocked Domains: [" + strconv.Itoa(s.AdsBlocked) + "](fg-blue)",
-		"Blocked Percentage: [" + fmt.Sprintf("%f", s.AdsPercentage) + "%](fg-blue)",
-		"DNS Queries Today: [" + strconv.Itoa(s.DNSQueries) + "](fg-blue)",
-		"Domains Being Blocked: [" + strconv.Itoa(s.DomainsBlocked) + "](fg-blue)",
-		"Queries Cached: [" + strconv.Itoa(s.QueriesCached) + "](fg-blue)",
-		"Queries Forwarded: [" + strconv.Itoa(s.QueriesForwarded) + "](fg-blue)",
-		"Clients Ever Seen: [" + strconv.Itoa(s.ClientsEverSeen) + "](fg-blue)",
-		"Unique Clients: [" + strconv.Itoa(s.UniqueClients) + "](fg-blue)",
-		"Unique Domains: [" + strconv.Itoa(s.UniqueDomains) + "](fg-blue)",
+		"Blocked Domains: [" + s.AdsBlockedToday + "](fg-blue)",
+		"Blocked Percentage: [" + s.AdsPercentageToday + "%](fg-blue)",
+		"DNS Queries Today: [" + s.DNSQueriesToday + "](fg-blue)",
+		"Domains Being Blocked: [" + s.DomainsBeingBlocked + "](fg-blue)",
+		"Queries Cached: [" + s.QueriesCached + "](fg-blue)",
+		"Queries Forwarded: [" + s.QueriesForwarded + "](fg-blue)",
+		"Clients Ever Seen: [" + s.ClientsEverSeen + "](fg-blue)",
+		"Unique Clients: [" + s.UniqueClients + "](fg-blue)",
+		"Unique Domains: [" + s.UniqueDomains + "](fg-blue)",
 	}
 	return sData
 }
