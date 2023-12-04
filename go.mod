@@ -1,10 +1,10 @@
 module github.com/shuienko/phstat
 
-go 1.17
+go 1.21
 
 require (
 	github.com/gizak/termui v2.2.0+incompatible
-	github.com/shuienko/go-pihole v0.0.0-20220202112044-2a1fd4338ace
+	github.com/shuienko/go-pihole v0.0.0-20231204192950-02c673c081f5
 )
 
 require (
