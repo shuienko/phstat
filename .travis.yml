@@ -1,9 +1,0 @@
-language: go
-
-go:
-  - 1.16.x
-
-before_install:
-  - go get github.com/shuienko/go-pihole
-
-script: go build
